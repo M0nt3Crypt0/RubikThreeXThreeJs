@@ -2,7 +2,7 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 
 let scene, camera, renderer;
 
-let cube;
+let rubik;
 
 function init() {
     scene = new THREE.Scene();
@@ -12,17 +12,16 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild( renderer.domElement );
     
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    cube = new THREE.Mesh( geometry, material );
-    scene.add( cube );
+    rubik = new THREE.Group();
+    createRubik(rubik);
+    scene.add(rubik);
 
     camera.position.z = 5;
 }
 
 function update() {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    rubik.rotation.x += 0.01;
+    rubik.rotation.y += 0.01;
 }
 
 function render() {
@@ -31,6 +30,17 @@ function render() {
     update();
 
     renderer.render( scene, camera );
+}
+
+function createRubik(rubik) {
+    const geometry = new THREE.BoxGeometry(.95, .95, .9, 1, 1, 1 );
+    const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+    let cube = new THREE.Mesh( geometry, material );
+    let cube2 = new THREE.Mesh( geometry, material );
+    cube2.translateX(1);
+
+    rubik.add(cube);
+    rubik.add(cube2);
 }
 
 init();

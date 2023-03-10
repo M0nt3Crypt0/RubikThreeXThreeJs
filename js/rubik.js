@@ -42,13 +42,14 @@ function createRubik(rubik) {
     const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 
     for (i = 0; i < 3; i++) {
-        for (j = 0; i < 3; i++) {
-            for (k = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            for (k = 0; k < 3; k++) {
                 eval("cube" + i + j + k + " = new THREE.Mesh( geometry, material);");
-                eval("cube" + i + j + k + ".translateX(i);");
-                eval("cube" + i + j + k + ".translateY(j);");
-                eval("cube" + i + j + k + ".translateZ(k);");
+                eval("cube" + i + j + k + ".translateX(i - 1);");
+                eval("cube" + i + j + k + ".translateY(j - 1);");
+                eval("cube" + i + j + k + ".translateZ(k - 1);");
                 eval("rubik.add(cube" + i + j + k + ");");
+                console.log("Cubo " + i +j + k + " añadido");
             }
         }
     }

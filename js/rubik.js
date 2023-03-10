@@ -2,6 +2,9 @@ import * as THREE from 'https://unpkg.com/three/build/three.module.js';
 
 let scene, camera, renderer;
 
+let cube000, cube001, cube002, cube010, cube011, cube012, cube020, cube021, cube022;
+let cube100, cube101, cube102, cube110, cube111, cube112, cube120, cube121, cube122;
+let cube200, cube201, cube202, cube210, cube211, cube212, cube220, cube221, cube222;
 let rubik;
 
 function init() {
@@ -22,6 +25,7 @@ function init() {
 function update() {
     rubik.rotation.x += 0.01;
     rubik.rotation.y += 0.01;
+    rubik.rotation.z += 0.01;
 }
 
 function render() {
@@ -33,14 +37,21 @@ function render() {
 }
 
 function createRubik(rubik) {
-    const geometry = new THREE.BoxGeometry(.95, .95, .9, 1, 1, 1 );
+    let i, j, k;
+    const geometry = new THREE.BoxGeometry(.9, .9, .9, 1, 1, 1 );
     const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
-    let cube = new THREE.Mesh( geometry, material );
-    let cube2 = new THREE.Mesh( geometry, material );
-    cube2.translateX(1);
 
-    rubik.add(cube);
-    rubik.add(cube2);
+    for (i = 0; i < 3; i++) {
+        for (j = 0; i < 3; i++) {
+            for (k = 0; i < 3; i++) {
+                eval("cube" + i + j + k + " = new THREE.Mesh( geometry, material);");
+                eval("cube" + i + j + k + ".translateX(i);");
+                eval("cube" + i + j + k + ".translateY(j);");
+                eval("cube" + i + j + k + ".translateZ(k);");
+                eval("rubik.add(cube" + i + j + k + ");");
+            }
+        }
+    }
 }
 
 init();

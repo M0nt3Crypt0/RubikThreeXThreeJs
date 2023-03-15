@@ -1,14 +1,23 @@
+<<<<<<< HEAD
+=======
+// import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+
+>>>>>>> bc73d28 (Importada libreria de forma local)
 let scene, camera, renderer;
 
 let cube000, cube001, cube002, cube010, cube011, cube012, cube020, cube021, cube022;
 let cube100, cube101, cube102, cube110, cube111, cube112, cube120, cube121, cube122;
 let cube200, cube201, cube202, cube210, cube211, cube212, cube220, cube221, cube222;
 <<<<<<< HEAD
+<<<<<<< HEAD
 let rubik;
 let selectedFace;
 =======
 let rubik, front;
 >>>>>>> 9650639 (creada rotación de la cara frontal)
+=======
+let rubik, selectedFace;
+>>>>>>> bc73d28 (Importada libreria de forma local)
 
 function init() {
     scene = new THREE.Scene();
@@ -24,8 +33,12 @@ function init() {
 
 =======
     rubik = new THREE.Group();
+<<<<<<< HEAD
     front = new THREE.Group();
 >>>>>>> 9650639 (creada rotación de la cara frontal)
+=======
+    selectedFace = new THREE.Group();
+>>>>>>> bc73d28 (Importada libreria de forma local)
     createRubik(rubik);
     scene.add(rubik);
     scene.add(front)
@@ -36,7 +49,7 @@ function update() {
     //rubik.rotation.x += 0.01;
     //rubik.rotation.y += 0.01;
     //rubik.rotation.z += 0.01;
-    front.rotation.z += 0.1;
+    front.rotation.z += 0.01;
 }
 
 function render() {
@@ -65,8 +78,17 @@ function createRubik(dimensions) {
             for (k = min; k < max; k++) {
 =======
 function createRubik() {
+
+    var colours = [0xC41E3A, 0x009E60, 0x0051BA, 0xFF5800, 0xFFD500, 0xFFFFFF];
+    let faceMaterials = colours.map(function(c) {
+        return new THREE.MeshLambertMaterial({ color: c , ambient: c });
+    })
+
+
     const geometry = new THREE.BoxGeometry(.9, .9, .9).toNonIndexed();
-    const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
+
+    const cubeMaterials = new THREE.MeshFaceMaterial(faceMaterials);
+    //const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
@@ -83,6 +105,19 @@ function createRubik() {
     }
 
     return rubik;
+}
+
+function selectFace(electedCube, axis) {
+    // devuelve el grupo a rotar
+
+}
+
+function rotateF() {
+    
+}
+
+function rotateFP() {
+
 }
 
 init();

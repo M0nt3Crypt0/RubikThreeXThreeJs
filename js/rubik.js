@@ -41,7 +41,7 @@ function init() {
 >>>>>>> bc73d28 (Importada libreria de forma local)
     createRubik(rubik);
     scene.add(rubik);
-    scene.add(front)
+    scene.add(selectedFace);
     camera.position.z = 5;
 }
 
@@ -49,7 +49,7 @@ function update() {
     //rubik.rotation.x += 0.01;
     //rubik.rotation.y += 0.01;
     //rubik.rotation.z += 0.01;
-    front.rotation.z += 0.01;
+    selectedFacee.rotation.z += 0.01;
 }
 
 function render() {
@@ -84,21 +84,35 @@ function createRubik() {
         return new THREE.MeshLambertMaterial({ color: c , ambient: c });
     })
 
-
-    const geometry = new THREE.BoxGeometry(.9, .9, .9).toNonIndexed();
-
-    const cubeMaterials = new THREE.MeshFaceMaterial(faceMaterials);
+    let primeCube = new THREE.Mesh(
+        new THREE.BoxGeometry(.9, .9, .9),
+        [
+            makeMaterial(colours[0], 0.75),
+            makeMaterial(colours[1], 0.75),
+            makeMaterial(colours[2], 0.50),
+            makeMaterial(colours[3], 0.50),
+            makeMaterial(colours[4], 0.25),
+            makeMaterial(colours[5], 0.25)
+        ]
+    );
     //const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             for (let k = 0; k < 3; k++) {
+<<<<<<< HEAD
 >>>>>>> 9650639 (creada rotación de la cara frontal)
                 eval("cube" + i + j + k + " = new THREE.Mesh( geometry, material);");
                 eval("cube" + i + j + k + ".position.set(i - 1, j - 1, k - 1)");
+=======
+                eval("cube" + i + j + k + " = primeCube.Clone();");
+                eval("cube" + i + j + k + ".translateX(i - 1);");
+                eval("cube" + i + j + k + ".translateY(j - 1);");
+                eval("cube" + i + j + k + ".translateZ(k - 1);");
+>>>>>>> d9d0bb2 (Cambios de nombres para estandarizar)
                 eval("rubik.add(cube" + i + j + k + ");");
                 if (k == 2) {
-                    eval("front.add(cube" + i + j + k + ");")
+                    eval("selectedFace.add(cube" + i + j + k + ");")
                 }
             }
         }
@@ -107,16 +121,17 @@ function createRubik() {
     return rubik;
 }
 
+function makeMaterial(color, opacity) {
+    return new THREE.MeshBasicMaterial({
+        color: color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: opacity
+    })
+}
+
 function selectFace(electedCube, axis) {
     // devuelve el grupo a rotar
-
-}
-
-function rotateF() {
-    
-}
-
-function rotateFP() {
 
 }
 

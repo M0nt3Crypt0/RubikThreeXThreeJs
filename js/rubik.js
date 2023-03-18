@@ -14,7 +14,7 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild( renderer.domElement );
     
-    rubik = new THREE.Group();
+    rubik = createRubik(3)
     selectedFace = new THREE.Group();
 
     createRubik(rubik);
@@ -39,21 +39,28 @@ function render() {
 
 function createRubik(dimensions) {
     let i, j, k;
+    //let max = dimensions / 2;
+    //let min = -1 * max;
+    let min = 0;
+    let max = 3;
+    
+    let rubik = new THREE.Group();
+
     const geometry = new THREE.BoxGeometry(.9, .9, .9, 1, 1, 1 );
     const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );
 
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 3; j++) {
-            for (k = 0; k < 3; k++) {
+    for (i = min; i < max; i++) {
+        for (j = min; j < max; j++) {
+            for (k = min; k < max; k++) {
                 eval("cube" + i + j + k + " = new THREE.Mesh( geometry, material);");
-                eval("cube" + i + j + k + ".translateX(i - 1);");
-                eval("cube" + i + j + k + ".translateY(j - 1);");
-                eval("cube" + i + j + k + ".translateZ(k - 1);");
+                eval("cube" + i + j + k + ".position.set(i - 1, j - 1, k - 1)");
                 eval("rubik.add(cube" + i + j + k + ");");
                 console.log("Cubo " + i +j + k + " añadido");
             }
         }
     }
+
+    return rubik;
 }
 
 init();

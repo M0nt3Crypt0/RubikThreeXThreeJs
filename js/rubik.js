@@ -1,11 +1,10 @@
-import * as THREE from 'https://unpkg.com/three/build/three.module.js';
-
 let scene, camera, renderer;
 
 let cube000, cube001, cube002, cube010, cube011, cube012, cube020, cube021, cube022;
 let cube100, cube101, cube102, cube110, cube111, cube112, cube120, cube121, cube122;
 let cube200, cube201, cube202, cube210, cube211, cube212, cube220, cube221, cube222;
 let rubik;
+let selectedFace;
 
 function init() {
     scene = new THREE.Scene();
@@ -16,6 +15,8 @@ function init() {
     document.body.appendChild( renderer.domElement );
     
     rubik = new THREE.Group();
+    selectedFace = new THREE.Group();
+
     createRubik(rubik);
     scene.add(rubik);
 
@@ -36,7 +37,7 @@ function render() {
     renderer.render( scene, camera );
 }
 
-function createRubik(rubik) {
+function createRubik(dimensions) {
     let i, j, k;
     const geometry = new THREE.BoxGeometry(.9, .9, .9, 1, 1, 1 );
     const material = new THREE.LineBasicMaterial( { color: 0x00ff00 } );

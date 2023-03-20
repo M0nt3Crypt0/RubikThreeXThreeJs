@@ -1,4 +1,5 @@
 let scene, camera, renderer;
+let cameraControl;
 
 let cube000, cube001, cube002, cube010, cube011, cube012, cube020, cube021, cube022;
 let cube100, cube101, cube102, cube110, cube112, cube120, cube121, cube122;
@@ -19,6 +20,9 @@ function init() {
     // Crea y configura la camara asi como sus controles
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
     camera.position.z = 5;
+
+    cameraControl = new THREE.OrbitControls(camera, renderer.domElement);
+    cameraControl.target.set(0, 0, 0);
 }
 
 function update() {
@@ -55,7 +59,6 @@ function addRubik() {
             }
         }
     }
-
     scene.add(rubik);
 }
 

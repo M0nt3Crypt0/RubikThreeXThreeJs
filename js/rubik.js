@@ -1,11 +1,24 @@
+<<<<<<< HEAD
+=======
+// import * as THREE from 'https://unpkg.com/three/build/three.module.js';
+
+>>>>>>> bc73d28 (Importada libreria de forma local)
 let scene, camera, renderer;
 let cameraControl;
 
 let cube000, cube001, cube002, cube010, cube011, cube012, cube020, cube021, cube022;
 let cube100, cube101, cube102, cube110, cube112, cube120, cube121, cube122;
 let cube200, cube201, cube202, cube210, cube211, cube212, cube220, cube221, cube222;
+<<<<<<< HEAD
+<<<<<<< HEAD
 let rubik;
 let selectedFace;
+=======
+let rubik, front;
+>>>>>>> 9650639 (creada rotación de la cara frontal)
+=======
+let rubik, selectedFace;
+>>>>>>> bc73d28 (Importada libreria de forma local)
 
 function init() {
     // Crea y configura la escena
@@ -54,12 +67,34 @@ function addRubik() {
                 if (i == 1 &  j == 1 & k == 1) { break; }
                 eval("cube" + i + j + k + " = new THREE.Mesh( geometry, material);");
                 eval("cube" + i + j + k + ".position.set(i - 1, j - 1, k - 1)");
+=======
+                eval("cube" + i + j + k + " = primeCube.Clone();");
+                eval("cube" + i + j + k + ".translateX(i - 1);");
+                eval("cube" + i + j + k + ".translateY(j - 1);");
+                eval("cube" + i + j + k + ".translateZ(k - 1);");
+>>>>>>> d9d0bb2 (Cambios de nombres para estandarizar)
                 eval("rubik.add(cube" + i + j + k + ");");
-                console.log("Cubo " + i +j + k + " añadido");
+                if (k == 2) {
+                    eval("selectedFace.add(cube" + i + j + k + ");")
+                }
             }
         }
     }
     scene.add(rubik);
+}
+
+function makeMaterial(color, opacity) {
+    return new THREE.MeshBasicMaterial({
+        color: color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: opacity
+    })
+}
+
+function selectFace(electedCube, axis) {
+    // devuelve el grupo a rotar
+
 }
 
 init();

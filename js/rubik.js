@@ -23,7 +23,7 @@ function init() {
     camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
     camera.position.x = 1;
     camera.position.y = 1;
-    camera.position.z = 5;
+    camera.position.z = 7;
 
     cameraControl = new THREE.OrbitControls(camera, renderer.domElement);
     cameraControl.target.set(1, 1, 1);
@@ -59,7 +59,6 @@ function addRubik() {
                 eval("cube" + i + j + k + " = cuboBase.clone();");
                 eval("cube" + i + j + k + ".position.set(i, j, k)");
                 eval("rubik.add(cube" + i + j + k + ");");
-                eval("console.log('Añadido cubo" + i + j + k + "');");
             }
         }
     }
@@ -67,13 +66,32 @@ function addRubik() {
 }
 
 function addSkybox() {
-    let geometry = new THREE.BoxGeometry(1000, 1000, 1000);
+    let geometry = new THREE.BoxGeometry(100, 100, 100);
 
-    
+    let ft = new THREE.TextureLoader().load("img/corona_ft.png");
+    let bk = new THREE.TextureLoader().load("img/corona_bk.png");
+    let up = new THREE.TextureLoader().load("img/corona_up.png");
+    let dn = new THREE.TextureLoader().load("img/corona_dn.png");
+    let rt = new THREE.TextureLoader().load("img/corona_rt.png");
+    let lf = new THREE.TextureLoader().load("img/corona_lf.png");
+
+    let materials = [
+        new THREE.MeshBasicMaterial({map: ft, side: THREE.BackSide}) ,
+        new THREE.MeshBasicMaterial({map: bk, side: THREE.BackSide}) ,
+        new THREE.MeshBasicMaterial({map: up, side: THREE.BackSide}) ,
+        new THREE.MeshBasicMaterial({map: dn, side: THREE.BackSide}) ,
+        new THREE.MeshBasicMaterial({map: rt, side: THREE.BackSide}) ,
+        new THREE.MeshBasicMaterial({map: lf, side: THREE.BackSide})
+    ]
+
+
+    let skybox = new THREE.Mesh(geometry, materials);
+    scene.add(skybox);
+    console.log("Skybox añadida");
 }
 
 function createBaseCube(cubo) {
-    let geometry = new THREE.BoxGeometry(.95, .95, .95, 1, 1, 1 ).toNonIndexed();
+    let geometry = new THREE.BoxGeometry(.95, .95, .95).toNonIndexed();
 
     // blanco, amarillo, naranja, rojo, verde, azul
     const materialFront = new THREE.MeshPhongMaterial({ color: 0xffffff }); 

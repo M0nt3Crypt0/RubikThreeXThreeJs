@@ -37,7 +37,7 @@ function render() {
 
     update();
 
-    renderer.render( scene, camera );
+    renderer.render(scene, camera);
 }
 
 function addRubik() {

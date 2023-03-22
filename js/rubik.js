@@ -1,8 +1,10 @@
 let scene, camera, renderer;
 let cameraControl, mouse, raycaster;
 
-let rubik = new THREE.Group();
-let selectedFace = new THREE.Group();
+let cubes = [];
+let selectedFace = new THREE.Object3D(), 
+selectedCubes = [];
+
 let selectedCube = null;
 let selectedAxis;
 
@@ -35,13 +37,14 @@ function init() {
 }
 
 function update() {
-    selectedFace.rotation.z += 0.01;
+    //selectedFace.rotation.z += 0.01;
 }
 
 function render() {
+    if (moving) {
+        rotateSelectedFace();
+    }
     requestAnimationFrame(render);
-
-    TWEEN.update();
 
     renderer.render(scene, camera);
 }
@@ -55,12 +58,11 @@ function addRubik() {
                 if (i == 0 && j == 0 && k == 0) { continue; }
                 let clone = baseCube.clone();
                 clone.position.set(i, j, k);
-                rubik.add(clone);
+                cubes.push(clone);
+                scene.add(clone);
             }
         }
     }
-    scene.add(rubik);
-    scene.add(selectedFace);
 }
 
 function addSkybox() {
@@ -111,29 +113,30 @@ function createBaseCube() {
 }
 
 function selectFace(center) {
-    selectedFace.children.forEach(function(cube) {
-        selectedFace.remove(cube);
-        rubik.add(cube);
-    })
+    console.log('selecciona')
+    cubes.forEach(cube => {
+        selectedCubes = [];
+    });
 
-    rubik.children.forEach(function(cube) {
+    cubes.forEach(cube => {
         if (selectedAxis == 'x') {
             if (cube.position.x == center) {
-                selectedFace.add(cube);
+                selectedCubes.push(cube);
             }
         } else if (selectedAxis == 'y') {
             if (cube.position.y == center) {
-                selectedFace.add(cube);
+                selectedCubes.push(cube);
             }
         } else if (selectedAxis == 'z') {
             if (cube.position.z == center) {
-                selectedFace.add(cube);
+                selectedCubes.push(cube);
             }
         }
     });
 }
 
 function rotateSelectedFace() {
+    console.log('rota')
     if (selectedAxis == 'x') {
         var tween = new TWEEN.Tween(selectedFace.rotation)
                 .delay(0)
@@ -156,6 +159,7 @@ function rotateSelectedFace() {
 
 // return axis z, y or z if is center
 function isCenter() {
+    console.log('comprueba centro')
     if (selectedCube.position.equals({x:  0, y:  0, z:  1}) ||
     selectedCube.position.equals({x:  0, y:  0, z: -1})) {
         selectedAxis = 'z';

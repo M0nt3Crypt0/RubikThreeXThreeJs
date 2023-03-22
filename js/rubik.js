@@ -41,9 +41,6 @@ function update() {
 }
 
 function render() {
-    if (moving) {
-        rotateSelectedFace();
-    }
     requestAnimationFrame(render);
 
     renderer.render(scene, camera);
@@ -136,23 +133,35 @@ function selectFace(center) {
 }
 
 function rotateSelectedFace() {
-    console.log('rota')
+    THREE.SceneUtils.detach( selectedCube, selectedFace, scene );
+    // reset parent object rotation
+    selectedFace.rotation.set( 0, 0, 0 );
+    selectedFace.updateMatrixWorld();
+    // attach dice to pivot object
+    THREE.SceneUtils.attach( selectedCube, scene, selectedFace );
+
     if (selectedAxis == 'x') {
+        console.log('giro1')
         var tween = new TWEEN.Tween(selectedFace.rotation)
                 .delay(0)
                 .to({ x: "-" + Math.PI/2}, 500)
+                .easing(TWEEN.Easing.Sinusoidal.InOut)
                 .start();
 
     } else if (selectedAxis == 'y') {
+        console.log('giro2')
         var tween = new TWEEN.Tween(selectedFace.rotation)
                 .delay(0)
                 .to({ y: "-" + Math.PI/2}, 500)
+                .easing(TWEEN.Easing.Sinusoidal.InOut)
                 .start();
 
     } else if (selectedAxis == 'z') {
+        console.log('giro3')
         var tween = new TWEEN.Tween(selectedFace.rotation)
                 .delay(0)
                 .to({ z: "-" + Math.PI/2}, 500)
+                .easing(TWEEN.Easing.Sinusoidal.InOut)
                 .start();
     }
 }

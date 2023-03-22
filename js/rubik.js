@@ -1,9 +1,9 @@
 let scene, camera, renderer;
 let cameraControl, mouse, raycaster;
 
-let rubik;
+let rubik = new THREE.Group();
+let selectedFace = new THREE.Group();
 let selectedCube = null;
-let selectedFace = null;
 
 function init() {
     // Crea y configura la escena
@@ -32,9 +32,7 @@ function init() {
 }
 
 function update() {
-    //rubik.rotation.x += 0.01;
-    //rubik.rotation.y += 0.01;
-    //rubik.rotation.z += 0.01;
+    selectedFace.rotation.z += 0.01;
 }
 
 function render() {
@@ -46,8 +44,6 @@ function render() {
 }
 
 function addRubik() {
-    rubik = new THREE.Group();
-
     let baseCube = createBaseCube();
 
     for (let i = - 1; i < 2; i++) {
@@ -111,14 +107,48 @@ function createBaseCube(cubo) {
     return cube;
 }
 
+function selectFace(center) {
+    rubik.children.forEach(function(cube) {
+        if (center[0] = 'x') {
+            if (cube.position.z == center[1]) {
+                selectedFace.add(cube);
+            }
+        } else if (center[0] = 'y') {
+            if (cube.position.x == center[1]) {
+                selectedFace.add(cube);
+            }
+        } else if (center[0] = 'z') {
+            if (cube.position.y == center[1]) {
+                selectedFace.add(cube);
+            }
+        }
+    });
+}
+
 function rotateSelectedFace() {
     const angle = Math.PI / 2;
     const axis = new THREE.Vector3(0, 1, 0);
     const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, angle);
-    selectedFace.face.normalMap().applyQuaternion(quaternion);
+    selectedFace.normalMap().applyQuaternion(quaternion);
     selectedFace.vertexNormals.forEach(vn => vn.applyQuaternion(quaternion));
     cube.geometry.verticesNeedUpdate = true;
     cube.geometry.normalsNeedUpdate = true;
+}
+
+// return axis z, y or z if is center
+function isCenter() {
+    if (selectedCube.position.equals({x:  0, y:  0, z:  1}) ||
+    selectedCube.position.equals({x:  0, y:  0, z: -1})) {
+        return ['z', selectedCube.position.z];
+    } else if(selectedCube.position.equals({x:  0, y:  1, z:  0}) ||
+    selectedCube.position.equals({x:  0, y: -1, z:  0})) {
+        return ['y', selectedCube.position.y];
+    } else if(selectedCube.position.equals({x:  1, y:  0, z:  0}) ||
+    selectedCube.position.equals({x: -1, y:  0, z:  0})) {
+        return ['x', selectedCube.position.x];
+    } else {
+        return false;
+    }
 }
 
 // Listeners
@@ -133,9 +163,13 @@ function onMouseDown(event) {
         if(selectedCube) {
             selectedCube.visible = true;
         }
-        selectedCube = intersects[0].object
-        selectedCube.visible = false;
-        console.log(selectedCube)
+        selectedCube = intersects[0].object;
+        let center = isCenter(selectedCube)
+        if (center) {
+            selectedCube.visible = false;
+            rubik.add(selectedFace);
+            selectFace(center)
+        }
     }
 
 }
@@ -144,8 +178,6 @@ function onKeyPress(event) {
     if(event.key == 'r' && selectedFace) {
         console.log('procedemos a la rotasion')
         rotateSelectedFace();
-    } else if (event.key == 'R' && selectedFace) {
-        console.log('procedemos a la rotasion inversa')
     }
 }
 

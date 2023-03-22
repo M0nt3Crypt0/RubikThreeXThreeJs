@@ -4,6 +4,7 @@ let cameraControl, mouse, raycaster;
 let rubik = new THREE.Group();
 let selectedFace = new THREE.Group();
 let selectedCube = null;
+let selectedAxis;
 
 function init() {
     // Crea y configura la escena
@@ -26,6 +27,8 @@ function init() {
     mouse = new THREE.Vector2();
     raycaster = new THREE.Raycaster();
 
+    // Interpolador 
+
     // Listeners
     window.addEventListener('mousedown', onMouseDown);
     window.addEventListener('keypress', onKeyPress);
@@ -38,7 +41,7 @@ function update() {
 function render() {
     requestAnimationFrame(render);
 
-    update();
+    TWEEN.update();
 
     renderer.render(scene, camera);
 }
@@ -57,6 +60,7 @@ function addRubik() {
         }
     }
     scene.add(rubik);
+    scene.add(selectedFace);
 }
 
 function addSkybox() {
@@ -82,16 +86,16 @@ function addSkybox() {
     scene.add(skybox);
 }
 
-function createBaseCube(cubo) {
+function createBaseCube() {
     let geometry = new THREE.BoxGeometry(.95, .95, .95);
 
     // blanco, amarillo, naranja, rojo, verde, azul en colores pastel
-    let front = new THREE.MeshPhongMaterial({ color: 0xffffff, transparent: true }); 
-    let back = new THREE.MeshPhongMaterial({ color: 0xffffad, transparent: true });
-    let up = new THREE.MeshPhongMaterial({ color: 0xffd493, transparent: true });
-    let down = new THREE.MeshPhongMaterial({ color: 0xff9f8c, transparent: true });
-    let right = new THREE.MeshPhongMaterial({ color: 0xa9bcff, transparent: true }); 
-    let left = new THREE.MeshPhongMaterial({ color: 0x9affff, transparent: true });
+    let front = new THREE.MeshPhongMaterial({color: 0xffffff}); 
+    let back = new THREE.MeshPhongMaterial({color: 0xffffad});
+    let up = new THREE.MeshPhongMaterial({color: 0xffd493});
+    let down = new THREE.MeshPhongMaterial({color: 0xff9f8c});
+    let right = new THREE.MeshPhongMaterial({color: 0xa9bcff}); 
+    let left = new THREE.MeshPhongMaterial({color: 0x9affff});
 
     let materials = [
         front,
@@ -103,22 +107,26 @@ function createBaseCube(cubo) {
     ]
 
     let cube = new THREE.Mesh(geometry, materials)
-    cube.transparent = true;
     return cube;
 }
 
 function selectFace(center) {
+    selectedFace.children.forEach(function(cube) {
+        selectedFace.remove(cube);
+        rubik.add(cube);
+    })
+
     rubik.children.forEach(function(cube) {
-        if (center[0] = 'x') {
-            if (cube.position.z == center[1]) {
+        if (selectedAxis == 'x') {
+            if (cube.position.x == center) {
                 selectedFace.add(cube);
             }
-        } else if (center[0] = 'y') {
-            if (cube.position.x == center[1]) {
+        } else if (selectedAxis == 'y') {
+            if (cube.position.y == center) {
                 selectedFace.add(cube);
             }
-        } else if (center[0] = 'z') {
-            if (cube.position.y == center[1]) {
+        } else if (selectedAxis == 'z') {
+            if (cube.position.z == center) {
                 selectedFace.add(cube);
             }
         }
@@ -126,26 +134,40 @@ function selectFace(center) {
 }
 
 function rotateSelectedFace() {
-    const angle = Math.PI / 2;
-    const axis = new THREE.Vector3(0, 1, 0);
-    const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, angle);
-    selectedFace.normalMap().applyQuaternion(quaternion);
-    selectedFace.vertexNormals.forEach(vn => vn.applyQuaternion(quaternion));
-    cube.geometry.verticesNeedUpdate = true;
-    cube.geometry.normalsNeedUpdate = true;
+    if (selectedAxis == 'x') {
+        var tween = new TWEEN.Tween(selectedFace.rotation)
+                .delay(0)
+                .to({ x: "-" + Math.PI/2}, 500)
+                .start();
+
+    } else if (selectedAxis == 'y') {
+        var tween = new TWEEN.Tween(selectedFace.rotation)
+                .delay(0)
+                .to({ y: "-" + Math.PI/2}, 500)
+                .start();
+
+    } else if (selectedAxis == 'z') {
+        var tween = new TWEEN.Tween(selectedFace.rotation)
+                .delay(0)
+                .to({ z: "-" + Math.PI/2}, 500)
+                .start();
+    }
 }
 
 // return axis z, y or z if is center
 function isCenter() {
     if (selectedCube.position.equals({x:  0, y:  0, z:  1}) ||
     selectedCube.position.equals({x:  0, y:  0, z: -1})) {
-        return ['z', selectedCube.position.z];
+        selectedAxis = 'z';
+        return selectedCube.position.z;
     } else if(selectedCube.position.equals({x:  0, y:  1, z:  0}) ||
     selectedCube.position.equals({x:  0, y: -1, z:  0})) {
-        return ['y', selectedCube.position.y];
+        selectedAxis = 'y';
+        return selectedCube.position.y;
     } else if(selectedCube.position.equals({x:  1, y:  0, z:  0}) ||
     selectedCube.position.equals({x: -1, y:  0, z:  0})) {
-        return ['x', selectedCube.position.x];
+        selectedAxis = 'x';
+        return selectedCube.position.x;
     } else {
         return false;
     }
@@ -167,8 +189,7 @@ function onMouseDown(event) {
         let center = isCenter(selectedCube)
         if (center) {
             selectedCube.visible = false;
-            rubik.add(selectedFace);
-            selectFace(center)
+            selectFace(center);
         }
     }
 
@@ -176,7 +197,6 @@ function onMouseDown(event) {
 
 function onKeyPress(event) {
     if(event.key == 'r' && selectedFace) {
-        console.log('procedemos a la rotasion')
         rotateSelectedFace();
     }
 }
